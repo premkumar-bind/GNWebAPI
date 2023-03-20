@@ -1,0 +1,105 @@
+﻿
+@{
+    ViewBag.Title = "GoogleMap";
+}
+
+<br />
+<br />
+<br />
+
+
+<script src='https://api.mapbox.com/mapbox-gl-js/v0.47.0/mapbox-gl.js'></script>
+<link href='https://api.mapbox.com/mapbox-gl-js/v0.47.0/mapbox-gl.css' rel='stylesheet' />
+@*This is used for the Geocoding Mapbox API*@
+<script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v2.2.0/mapbox-gl-geocoder.min.js'>
+</script>
+<link rel='stylesheet' href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v2.2.0/mapbox-gl-geocoder.css' type='text/css' />
+
+<table style="width:100%;border:0px; top:150px">
+
+    <tr style="border-bottom:5px solid #0094ff">
+
+        <td style="width:70%"><h4>Google Map</h4></td>
+        <td style="width:30%; text-align:right">  @Html.ActionLink("Back", "ContactList", null, new { @class = "btn btn-primary" })</td>
+    </tr>
+</table>
+
+<div id="map"></div>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDQmNA8OhuX6xa93xzxBnKHAUdSrVaDyiE&libraries=places&callback=initAutocomplete" async defer></script>
+<script type="text/javascript">
+
+    function initAutocomplete() {
+        var map = new google.maps.Map(document.getElementById('map'), {
+            center: {
+                lat: 52.728616,
+                lng: 6.4901
+            },
+            zoom: 13,
+            mapTypeId: 'roadmap'
+        });
+        var markers = [];
+        // Create the search boxs and link them to the UI elements.
+        var searchBoxes = @Html.Raw(ViewBag.MapAddres);
+        for (var i = 0; i < searchBoxes.length; i++) {
+            var searchBox = new google.maps.places.SearchBox(searchBoxes[i]);
+            map.controls[google.maps.ControlPosition.TOP_LEFT].push(searchBoxes[i]);
+            map.addListener('bounds_changed', function () {
+                searchBox.setBounds(map.getBounds());
+            });
+            markers.push([]);
+            searchBox.addListener(' ', (function (i) {
+                return function () {
+                    processSearch(i, this)
+                }
+            }(i)));
+        }
+
+        function processSearch(uniqueId, searchBox) {
+            var places = searchBox.getPlaces();
+
+            if (places.length == 0) {
+                return;
+            }
+
+            // Clear out the old markers.
+            markers[uniqueId].forEach(function (marker) {
+                marker.setMap(null);
+            });
+            markers[uniqueId] = [];
+
+            // For each place, get the icon, name and location.
+            var bounds = new google.maps.LatLngBounds();
+            places.forEach(function (place) {
+                if (!place.geometry) {
+                    console.log("Returned place contains no geometry");
+                    return;
+                }
+                var icon = {
+                    url: place.icon,
+                    size: new google.maps.Size(71, 71),
+                    origin: new google.maps.Point(0, 0),
+                    anchor: new google.maps.Point(17, 34),
+                    scaledSize: new google.maps.Size(25, 25)
+                };
+
+                // Create a marker for each place.
+                if (!markers[uniqueId]) markers.push([]);
+                markers[uniqueId].push(new google.maps.Marker({
+                    map: map,
+                    icon: icon,
+                    title: place.name,
+                    position: place.geometry.location
+                }));
+
+                if (place.geometry.viewport) {
+                    // Only geocodes have viewport.
+                    bounds.union(place.geometry.viewport);
+                } else {
+                    bounds.extend(place.geometry.location);
+                }
+            });
+            map.fitBounds(bounds);
+        }
+    }
+
+</script>

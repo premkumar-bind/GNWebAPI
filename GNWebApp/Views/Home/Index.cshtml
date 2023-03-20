@@ -1,0 +1,69 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+
+<div class="jumbotron">
+    <br />
+    <br />
+    <br />
+    <p class="lead">
+        <strong>Welcome :</strong><strong style="color:green">
+            Admin
+        </strong>
+
+    </p>
+
+</div>
+<style type="text/css">
+    html {
+        height: 100%
+    }
+
+    body {
+        height: 100%;
+        margin: 0;
+        padding: 0
+    }
+
+    #map-canvas {
+        height: 100%
+    }
+</style>
+
+<div id="dvMap" style="width: 100%; height: 400px">
+</div>
+<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDQmNA8OhuX6xa93xzxBnKHAUdSrVaDyiE"></script>
+<script type="text/javascript">
+
+    function GetLocation(Latitude, Longitude) {
+
+        var mapOptions = {
+            center: new google.maps.LatLng(Latitude, Longitude),
+            zoom: 8,
+            mapTypeId: google.maps.MapTypeId.ROADMAP
+        };
+        var infoWindow = new google.maps.InfoWindow();
+        var map = new google.maps.Map(document.getElementById("dvMap"), mapOptions);
+
+        var data = "{" + Latitude + "," + Longitude + "}"
+        var myLatlng = new google.maps.LatLng(Latitude, Longitude);
+        var marker = new google.maps.Marker({
+            position: myLatlng,
+            map: map,
+            title: ''
+        });
+        (function (marker, data) {
+            google.maps.event.addListener(marker, "click", function (e) {
+                infoWindow.setContent(data.description);
+                infoWindow.open(map, marker);
+            });
+        })(marker, data);
+    }
+    window.onload = function () {
+        navigator.geolocation.getCurrentPosition(showPosition);
+    }
+
+    function showPosition(position) {
+        GetLocation(position.coords.latitude, position.coords.longitude);
+    }
+</script>

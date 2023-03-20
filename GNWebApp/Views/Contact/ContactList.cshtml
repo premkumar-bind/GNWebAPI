@@ -1,0 +1,244 @@
+﻿@model IEnumerable<GNWebApp.Models.ContactModel>
+
+@{
+    ViewBag.Title = "ContactList";
+}
+<div class="containerss">
+    <div class="card level-3dsrer">
+
+        <div class="alert alert-success">
+            <h2>Contact List</h2>
+        </div>
+
+        <p>
+            @Html.ActionLink("Add Contact", "AddContact", null, new { @class = "btn btn-primary" })
+            @if (TempData["Msg"] != null)
+            {
+
+                <strong>Information :</strong><strong style="color:green">
+                    @TempData["Msg"]
+                </strong>
+
+            }
+            @if (TempData["ErrorMsg"] != null)
+            {
+
+                <strong>Information :</strong><strong style="color:red">
+                    @TempData["ErrorMsg"]
+                </strong>
+
+            }
+        </p>
+        <div class="tablealign">
+            <div></div>
+            <table class="table table-sm table-bordered">
+                <thead id="tbldata" class="thead-dark">
+
+                    <tr>
+                        <th>
+                            <div>
+                                @Html.ActionLink("First Name", "ContactList", new { SortOrder = ViewBag.SortOrder == null ? "Asc" : (ViewBag.SortOrder == "Asc" ? "Desc" : "Asc"), SortBy = "FirstName" })
+                            </div>
+                        </th>
+                        <th>
+                            <div>
+                                @Html.ActionLink("Last Name", "ContactList", new { SortOrder = ViewBag.SortOrder == null ? "Asc" : (ViewBag.SortOrder == "Asc" ? "Desc" : "Asc"), SortBy = "LastName" })
+
+                            </div>
+                        </th>
+                        <th>
+                            <div>
+                                @Html.ActionLink("Email", "ContactList", new { SortOrder = ViewBag.SortOrder == null ? "Asc" : (ViewBag.SortOrder == "Asc" ? "Desc" : "Asc"), SortBy = "Email" })
+
+                            </div>
+                        </th>
+                        <th>
+                            <div>
+                                @Html.ActionLink("Phone No.", "ContactList", new { SortOrder = ViewBag.SortOrder == null ? "Asc" : (ViewBag.SortOrder == "Asc" ? "Desc" : "Asc"), SortBy = "PhoneNumber" })
+
+                            </div>
+                        </th>
+                        <th>
+                            <div>
+                                @Html.ActionLink("Address", "ContactList", new { SortOrder = ViewBag.SortOrder == null ? "Asc" : (ViewBag.SortOrder == "Asc" ? "Desc" : "Asc"), SortBy = "Address" })
+                            </div>
+
+                        </th>
+                        <th>
+                            <div>
+                                @Html.ActionLink("City", "ContactList", new { SortOrder = ViewBag.SortOrder == null ? "Asc" : (ViewBag.SortOrder == "Asc" ? "Desc" : "Asc"), SortBy = "City" })
+
+                            </div>
+                        </th>
+                        <th>
+                            <div>
+                                @Html.ActionLink("State", "ContactList", new { SortOrder = ViewBag.SortOrder == null ? "Asc" : (ViewBag.SortOrder == "Asc" ? "Desc" : "Asc"), SortBy = "State" })
+                            </div>
+
+                        </th>
+                        <th>
+                            <div>
+                                @Html.ActionLink("Country", "ContactList", new { SortOrder = ViewBag.SortOrder == null ? "Asc" : (ViewBag.SortOrder == "Asc" ? "Desc" : "Asc"), SortBy = "Country" })
+                            </div>
+
+                        </th>
+                        <th>
+                            <div>
+                                @Html.ActionLink("Postal Code", "ContactList", new { SortOrder = ViewBag.SortOrder == null ? "Asc" : (ViewBag.SortOrder == "Asc" ? "Desc" : "Asc"), SortBy = "PostalCode" })
+                            </div>
+
+                        </th>
+                        <th>Action </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+
+                            <td>
+                                @Html.DisplayFor(modelItem => item.FirstName)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.LastName)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Email)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.PhoneNumber)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Address)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.City)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.State)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Country)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.PostalCode)
+                            </td>
+                            <td>
+                                <a href="@Url.Action("EditContact","Contact",new {id= item.ContactId})">Edit</a> 
+                                <a onclick="return confirm('Do you want to Delete?')"
+                                   href="@Url.Action("Delete","Contact",new {id= item.ContactId})">Delete</a> 
+                                <a href="@Url.Action("GoogleMap","Contact",new {Address= item.Address})">Map</a>
+                               
+                            </td>
+                        </tr>
+
+                    }
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+
+</div>
+
+
+<script type="text/javascript">
+    $(function () {
+        $("#tbldata tbody tr").each(function () {
+            var date = $(this).find('td').eq(0).html();
+
+            $(this).attr('style', 'background-color:red;');
+
+        });
+    });
+</script>
+
+<style type="text/css">
+    * {
+        box-sizing: border-box;
+    }
+
+    .wrapper2 {
+        height: 30vw;
+        overflow-y: scroll;
+    }
+
+    .card {
+        background-color: #fff;
+        border-radius: 10px;
+        margin: 1% auto;
+        position: relative;
+        padding: 3px;
+        color: #444;
+        cursor: pointer;
+        overflow-x: auto;
+    }
+
+
+
+        .card:before {
+            display: block;
+            position: absolute;
+            background-color: #ccc;
+            z-index: -1;
+            box-shadow: 0 0 40px #999999;
+            transition: box-shadow .2s ease-in-out;
+        }
+
+        .card.level-3:hover:before {
+            box-shadow: 0 0 80px #999999;
+        }
+
+    .table {
+        border-collapse: collapse;
+        width: 95%;
+    }
+
+        .table td {
+            overflow: hidden;
+            word-break: normal;
+            text-align: center;
+        }
+
+        .table th {
+            text-align: center;
+            word-break: normal;
+            min-width: 100px;
+        }
+
+    .tablealign {
+        float: right;
+        width: 100%;
+        height: 100%;
+        border-radius: 3px;
+        padding-bottom: 50px;
+    }
+
+    tbody {
+        overflow-y: auto;
+        overflow-x: hidden;
+        height: 300px;
+        display: block;
+    }
+
+        tbody::-webkit-scrollbar {
+            width: 0;
+        }
+
+    thead {
+        display: table;
+        width: calc(100% - 17px);
+        table-layout: auto;
+    }
+
+    tbody tr {
+        table-layout: fixed;
+        display: table;
+        width: 100%;
+    }
+
+    div.c {
+        line-height: 1%;
+    }
+</style>
